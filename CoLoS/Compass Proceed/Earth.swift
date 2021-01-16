@@ -12,7 +12,7 @@ class Earth {
     private static let rPoles = 6357.0 //km
     private static let rÄquator = 6378.0 //km
     
-    static func getCoordinate(latitude: Double, longitude: Double) -> Point {
+    static func getCartesianCoordinates(latitude: Double, longitude: Double) -> Point {
         
         let phi = toRadians(latitude)
         let lambda = toRadians(longitude)
@@ -28,7 +28,7 @@ class Earth {
     
     static func getNormalVectorOfTangentailPlane(latitude: Double, longitude: Double) -> Vector {
         
-        let p = Earth.getCoordinate(latitude: latitude, longitude: longitude)
+        let p = Earth.getCartesianCoordinates(latitude: latitude, longitude: longitude)
         
         let variable = sqrt(p.x * p.x + p.y * p.y)
         let a = rÄquator * rÄquator

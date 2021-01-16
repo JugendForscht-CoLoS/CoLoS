@@ -61,7 +61,7 @@ extension Date {
             }
             else {
                 
-                date = time + 86400 * (comps.day! + month[comps.month!] + 1)
+                date = time + 86400 * (comps.day! - 1 + month[comps.month! - 1])
             }
             
             return date

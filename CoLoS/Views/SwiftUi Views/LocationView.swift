@@ -20,6 +20,6 @@ struct LocationView: View {
 
 struct LocationView_Previews: PreviewProvider {
     static var previews: some View {
-        LocationView(location: ComputedLocation(CLLocationCoordinate2D(latitude: 49.763, longitude: 8.633)))
+        LocationView(location: ComputedLocation(RadiansCoordinate(latitude: toRadians(49.763), longitude: toRadians(8.633))))
     }
 }
