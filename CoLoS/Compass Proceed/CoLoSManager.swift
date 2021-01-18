@@ -10,11 +10,11 @@ import CoreLocation
 
 class CoLoSManager {
     
-    private let magneticSouthPole = Earth.getCartesianCoordinates(latitude: 86.502, longitude: 164.036) //https://www.ngdc.noaa.gov/geomag/GeomagneticPoles.shtml (2020)
+    private let magneticSouthPole = Earth.getCartesianCoordinates(latitude: 86.415, longitude: 157.690) //https://www.ngdc.noaa.gov/geomag/GeomagneticPoles.shtml (2021)
     private let geographicNorthPole = Earth.getCartesianCoordinates(latitude: 0, longitude: 0)
     
-    var azimuts: (Double?, Double?)
-    var elevations: (Double?, Double?)
+    var azimuts: (Double?, Double?) //Bogenmaß
+    var elevations: (Double?, Double?) //Bogenmaß
     var time: Double?
     var date: Double?
     
@@ -32,7 +32,7 @@ class CoLoSManager {
         elevations.1 = elevation
     }
     
-    func computeUsersLocation() -> ComputedLocation { //Ohne Kompassverfahren
+    func computeUsersLocation() -> ComputedLocation { //Ohne Kompassverfahren (funktioniert)
         
         guard let azimut0 = azimuts.0, let azimut1 = azimuts.1, let elevation0 = elevations.0, let elevation1 = elevations.1, let time = time, let date = date else { return ComputedLocation(CLLocationCoordinate2D(latitude: 0, longitude: 0))}
         

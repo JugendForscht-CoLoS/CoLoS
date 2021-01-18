@@ -1,2 +1,2 @@
-#  Kompass Verfahren
+#  Kompass Verfahren (Compass Procedure)
 
