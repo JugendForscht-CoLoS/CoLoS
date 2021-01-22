@@ -11,10 +11,35 @@ import CoreLocation
 struct LocationView: View {
     
     let location: ComputedLocation
+    @State var wasNotSuccessful: Bool = true
+    
+    init(location: ComputedLocation) {
+        
+        self.location = location
+        
+        if location.coordinate.latitude >= -90 || location.coordinate.latitude <= 90 {
+            
+            if location.coordinate.longitude >= -180 || location.coordinate.longitude <= 180 {
+                
+                wasNotSuccessful = false
+            }
+        }
+    }
     
     var body: some View {
         
-        MapView(location)
+        if !wasNotSuccessful {
+            
+            MapView(location)
+        }
+        else {
+            
+            Text("")
+                .alert(isPresented: $wasNotSuccessful) {
+                    
+                    Alert(title: Text("Fehler"), message: Text("Standortsbestimmung fehlgeschlagen."), dismissButton: .default(Text("OK")))
+                }
+        }
     }
 }
 
