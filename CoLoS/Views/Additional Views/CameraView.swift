@@ -96,7 +96,7 @@ extension CameraView: MLManagerDelegate {
     
     func mlManagerDetectedSun(inRegion region: CGRect) {
         
-        if region.isEmpty { //Hier wird überprüft ob Sonne mittig ist!!!
+        if region.isEmpty { //Hier wird überprüft ob Sonne mittig ist (das ist natürlich noch nicht richtig und dient als Platzhalter)
             
             captureSession.stopRunning()
             completionHandler()
