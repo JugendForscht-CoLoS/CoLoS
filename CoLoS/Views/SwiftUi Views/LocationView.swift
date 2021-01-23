@@ -23,6 +23,14 @@ struct LocationView: View {
                 
                 wasNotSuccessful = false
             }
+            else {
+                
+                logger.fault("LocationView: Longitude out of bounds.")
+            }
+        }
+        else {
+            
+            logger.fault("LocationView: Latitude out of bounds.")
         }
     }
     

@@ -45,6 +45,8 @@ struct MeasurementProcedureView: View {
     
     func measurementCompleted(azimut: Double, elevation: Double, time: Double, date: Double) {
         
+        logger.notice("Measurement: azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
+        
         DispatchQueue.main.async {
             
             if firstMeasurement {

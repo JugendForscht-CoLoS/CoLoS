@@ -73,11 +73,13 @@ class OSMTileOverlay: MKTileOverlay {
                 }
                 else {
                     
+                    logger.info("OSMTileOverlay: MapTiles have not been downloaded yet.")
                     return Bundle.main.url(forResource: "default", withExtension: "png")!
                 }
             }
             else {
                 
+                logger.error("OSMTileOverlay: Could not find cache url.")
                 return Bundle.main.url(forResource: "default", withExtension: "png")!
             }
         }

@@ -25,7 +25,7 @@ class AlignmentManager {
         }
         else {
             
-            //ToDo
+            logger.fault("AlignmentManager: DeviceMotion is not avaidable.")
         }
     }
     
@@ -56,11 +56,11 @@ class AlignmentManager {
         }
         else {
             
-            //ToDo
+            logger.fault("AlignmentManager: Could not unwrap CMDeviceMotion data.")
         }
         if let error = error {
             
-            //ToDo
+            logger.error("AlignmentManager: An Error occured in deviceMotionHasUpdated() \(error.localizedDescription)")
         }
     }
 }

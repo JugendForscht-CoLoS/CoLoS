@@ -28,7 +28,7 @@ final class CameraView: NSObject, UIViewRepresentable {
         
         guard let device = AVCaptureDevice.default(for: .video) else {
             
-            //ToDo
+            logger.fault("CameraView: Could not get connection to the camera.")
             return
         }
         do {
@@ -41,7 +41,7 @@ final class CameraView: NSObject, UIViewRepresentable {
             }
             else {
                 
-                //ToDo
+                logger.fault("CameraView: Could not add camera to capture session.")
             }
             
             let output = AVCaptureVideoDataOutput()
@@ -53,14 +53,14 @@ final class CameraView: NSObject, UIViewRepresentable {
             }
             else {
                 
-                //ToDo
+                logger.fault("CameraView: Could not add output to capture session.")
             }
             
             captureSession.startRunning()
         }
         catch {
             
-            //ToDo
+            logger.fault("CameraView: Could not initialize AVCaptureDeviceInput object.")
         }
     }
     

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import os
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -92,17 +93,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             catch {
                 
-                print(error.localizedDescription)
-                //ToDo
+                logger.error("Map-Download: Error occured \(error.localizedDescription)")
             }
         }
         else {
             
-            //ToDo
+            logger.fault("Map-Download: Could not find cache url.")
         }
     }
 
 }
+
+let logger = Logger(subsystem: "com.timjaeger.CoLoS", category: "main")
 
 func pow(a: Int, b: Int) -> Int {
     
