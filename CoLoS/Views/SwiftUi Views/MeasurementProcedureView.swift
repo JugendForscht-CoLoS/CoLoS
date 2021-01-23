@@ -58,7 +58,7 @@ struct MeasurementProcedureView: View {
                 
                 manager.addFirstMeasurement(azimut: azimut, elevation: elevation, time: time, date: date)
                 
-                logger.notice("Measurement1(\(MeasurementProcedureView.taskID, privacy: .public): azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
+                logger.notice("Measurement1(\(MeasurementProcedureView.taskID, privacy: .public)): azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
             }
             else {
                 
@@ -66,7 +66,7 @@ struct MeasurementProcedureView: View {
                 location = manager.computeUsersLocation()
                 viewType = .locationView
                 
-                logger.notice("Measurement2(\(MeasurementProcedureView.taskID, privacy: .public): azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
+                logger.notice("Measurement2(\(MeasurementProcedureView.taskID, privacy: .public)): azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
             }
         }
     }
