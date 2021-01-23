@@ -60,7 +60,7 @@ class AlignmentManager {
         }
         if let error = error {
             
-            logger.error("AlignmentManager: An Error occured in deviceMotionHasUpdated() \(error.localizedDescription)")
+            logger.error("AlignmentManager: An Error occured in deviceMotionHasUpdated() \(error.localizedDescription, privacy: .public)")
         }
     }
 }

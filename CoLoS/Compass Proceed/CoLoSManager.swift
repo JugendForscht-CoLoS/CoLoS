@@ -38,7 +38,7 @@ class CoLoSManager {
         
         let coordinate = getCoordinate(azimut: (azimut0, azimut1), beta: 0, elevation: (elevation0, elevation1), time: time, date: date)
         
-        logger.notice("CoLoSManager: latitude = \(toDegrees(coordinate.latitude))°; longitude = \(toDegrees(coordinate.longitude))°")
+        logger.notice("CoLoSManager(\(MeasurementProcedureView.taskID, privacy: .public)): latitude = \(toDegrees(coordinate.latitude))°; longitude = \(toDegrees(coordinate.longitude))°")
         
         return ComputedLocation(coordinate)
     }

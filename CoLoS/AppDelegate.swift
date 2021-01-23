@@ -93,7 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             catch {
                 
-                logger.error("Map-Download: Error occured \(error.localizedDescription)")
+                logger.error("Map-Download: Error occured \(error.localizedDescription, privacy: .public)")
             }
         }
         else {

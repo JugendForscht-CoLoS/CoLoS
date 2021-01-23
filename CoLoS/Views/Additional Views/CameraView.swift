@@ -60,7 +60,7 @@ final class CameraView: NSObject, UIViewRepresentable {
         }
         catch {
             
-            logger.fault("CameraView: Could not initialize AVCaptureDeviceInput object.")
+            logger.fault("CameraView: An error occured \(error.localizedDescription, privacy: .public)")
         }
     }
     

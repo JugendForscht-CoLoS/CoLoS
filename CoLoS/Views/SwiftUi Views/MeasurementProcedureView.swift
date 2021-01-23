@@ -1,5 +1,5 @@
 //
-//  MeasurementProceedView.swift
+//  MeasurementProcedureView.swift
 //  CoLoS
 //
 //  Created by Tim Jaeger on 03.01.21.
@@ -9,6 +9,8 @@ import SwiftUI
 import CoreLocation
 
 struct MeasurementProcedureView: View {
+    
+    static var taskID = UUID()
     
     @State var viewType = MeasurementTypes.measurementView
     @State var firstMeasurement = true
@@ -45,28 +47,32 @@ struct MeasurementProcedureView: View {
     
     func measurementCompleted(azimut: Double, elevation: Double, time: Double, date: Double) {
         
-        logger.notice("Measurement: azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
-        
         DispatchQueue.main.async {
             
             if firstMeasurement {
+                
+                MeasurementProcedureView.taskID = UUID()
                 
                 viewType = .timerView
                 firstMeasurement = false
                 
                 manager.addFirstMeasurement(azimut: azimut, elevation: elevation, time: time, date: date)
+                
+                logger.notice("Measurement1(\(MeasurementProcedureView.taskID, privacy: .public): azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
             }
             else {
                 
                 manager.addSecondMeasurement(azimut: azimut, elevation: elevation)
                 location = manager.computeUsersLocation()
                 viewType = .locationView
+                
+                logger.notice("Measurement2(\(MeasurementProcedureView.taskID, privacy: .public): azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
             }
         }
     }
 }
 
-struct MeasurementProceedView_Previews: PreviewProvider {
+struct MeasurementProcedureView_Previews: PreviewProvider {
     static var previews: some View {
         MeasurementProcedureView()
     }

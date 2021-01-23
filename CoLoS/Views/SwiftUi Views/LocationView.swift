@@ -25,12 +25,12 @@ struct LocationView: View {
             }
             else {
                 
-                logger.fault("LocationView: Longitude out of bounds.")
+                logger.fault("LocationView(\(MeasurementProcedureView.taskID, privacy: .public)): Longitude out of bounds.")
             }
         }
         else {
             
-            logger.fault("LocationView: Latitude out of bounds.")
+            logger.fault("LocationView(\(MeasurementProcedureView.taskID, privacy: .public)): Latitude out of bounds.")
         }
     }
     
