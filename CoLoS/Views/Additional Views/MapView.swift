@@ -11,11 +11,11 @@ import SwiftUI
 
 final class MapView: NSObject, UIViewRepresentable {
     
-    let location: ComputedLocation
+    let location: ComputedLocation?
     let mapView: MKMapView
     var tileRenderer: MKTileOverlayRenderer! = nil
     
-    init(_ location: ComputedLocation) {
+    init(_ location: ComputedLocation?) {
         
         self.location = location
         mapView = MKMapView()
@@ -25,15 +25,20 @@ final class MapView: NSObject, UIViewRepresentable {
     
     func makeUIView(context: Context) -> MKMapView {
         
+        mapView.isRotateEnabled = false
+        
         let overlay = OSMTileOverlay()
         overlay.canReplaceMapContent = true
         mapView.addOverlay(overlay, level: .aboveLabels)
         tileRenderer = MKTileOverlayRenderer(tileOverlay: overlay)
         mapView.delegate = self
         
-        let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
-        mapView.setRegion(region, animated: true)
-        mapView.addAnnotation(Annotation(coordinate: location.coordinate))
+        if let location = location {
+            
+            let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+            mapView.setRegion(region, animated: true)
+            mapView.addAnnotation(Annotation(coordinate: location.coordinate))
+        }
         
         return mapView
     }

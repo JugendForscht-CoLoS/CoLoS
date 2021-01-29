@@ -14,7 +14,7 @@ struct MeasurementProcedureView: View {
     
     @State var viewType = MeasurementTypes.measurementView
     @State var firstMeasurement = true
-    @State var location = ComputedLocation( CLLocationCoordinate2D(latitude: 0, longitude: 0))
+    @State var location: ComputedLocation! = nil
     
     let manager = CoLoSManager()
     
@@ -57,16 +57,15 @@ struct MeasurementProcedureView: View {
                 firstMeasurement = false
                 
                 manager.addFirstMeasurement(azimut: azimut, elevation: elevation, time: time, date: date)
-                
                 logger.notice("Measurement1(\(MeasurementProcedureView.taskID, privacy: .public)): azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
             }
             else {
                 
                 manager.addSecondMeasurement(azimut: azimut, elevation: elevation)
+                logger.notice("Measurement2(\(MeasurementProcedureView.taskID, privacy: .public)): azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
+                
                 location = manager.computeUsersLocation()
                 viewType = .locationView
-                
-                logger.notice("Measurement2(\(MeasurementProcedureView.taskID, privacy: .public)): azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
             }
         }
     }

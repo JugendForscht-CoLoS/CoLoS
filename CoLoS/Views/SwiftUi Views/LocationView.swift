@@ -10,27 +10,24 @@ import CoreLocation
 
 struct LocationView: View {
     
-    let location: ComputedLocation
-    @State var wasNotSuccessful: Bool = true
+    var location: ComputedLocation?
+    @State var wasNotSuccessful: Bool = false
     
     init(location: ComputedLocation) {
         
         self.location = location
         
-        if location.coordinate.latitude >= -90 || location.coordinate.latitude <= 90 {
+        if !(location.coordinate.latitude >= -90 || location.coordinate.latitude <= 90) {
             
-            if location.coordinate.longitude >= -180 || location.coordinate.longitude <= 180 {
-                
-                wasNotSuccessful = false
-            }
-            else {
-                
-                logger.fault("LocationView(\(MeasurementProcedureView.taskID, privacy: .public)): Longitude out of bounds.")
-            }
-        }
-        else {
-            
+            self.location = nil
+            wasNotSuccessful = true
             logger.fault("LocationView(\(MeasurementProcedureView.taskID, privacy: .public)): Latitude out of bounds.")
+        }
+        if !(location.coordinate.longitude >= -180 || location.coordinate.longitude <= 180) {
+            
+            self.location = nil
+            wasNotSuccessful = true
+            logger.fault("LocationView(\(MeasurementProcedureView.taskID, privacy: .public)): Longitude out of bounds.")
         }
     }
     
@@ -39,6 +36,8 @@ struct LocationView: View {
         if !wasNotSuccessful {
             
             MapView(location)
+                .cornerRadius(3.0)
+                .padding()
         }
         else {
             
