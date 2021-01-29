@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct TimerView: View {
     
@@ -28,6 +29,8 @@ struct TimerView: View {
                     }
                     else if self.remainingSec == 0 {
                             
+                        let systemSound: SystemSoundID = 1304
+                        AudioServicesPlaySystemSound(systemSound)
                         self.completionHandler()
                     }
                 }

@@ -17,13 +17,13 @@ struct LocationView: View {
         
         self.location = location
         
-        if !(location.coordinate.latitude >= -90 || location.coordinate.latitude <= 90) {
+        if !(location.coordinate.latitude >= -90 && location.coordinate.latitude <= 90) {
             
             self.location = nil
             wasNotSuccessful = true
             logger.fault("LocationView(\(MeasurementProcedureView.taskID, privacy: .public)): Latitude out of bounds.")
         }
-        if !(location.coordinate.longitude >= -180 || location.coordinate.longitude <= 180) {
+        if !(location.coordinate.longitude >= -180 && location.coordinate.longitude <= 180) {
             
             self.location = nil
             wasNotSuccessful = true
