@@ -20,33 +20,26 @@ struct LocationView: View {
         if !(location.coordinate.latitude >= -90 && location.coordinate.latitude <= 90) {
             
             self.location = nil
-            wasNotSuccessful = true
+            _wasNotSuccessful = State(initialValue: true)
             logger.fault("LocationView(\(MeasurementProcedureView.taskID, privacy: .public)): Latitude out of bounds.")
         }
         if !(location.coordinate.longitude >= -180 && location.coordinate.longitude <= 180) {
             
             self.location = nil
-            wasNotSuccessful = true
+            _wasNotSuccessful = State(initialValue: true)
             logger.fault("LocationView(\(MeasurementProcedureView.taskID, privacy: .public)): Longitude out of bounds.")
         }
     }
     
     var body: some View {
-        
-        if !wasNotSuccessful {
-            
-            MapView(location)
-                .cornerRadius(3.0)
-                .padding()
-        }
-        else {
-            
-            Text("")
-                .alert(isPresented: $wasNotSuccessful) {
+
+        MapView(location)
+            .cornerRadius(3.0)
+            .padding()
+            .alert(isPresented: $wasNotSuccessful) {
                     
-                    Alert(title: Text("Fehler"), message: Text("Standortsbestimmung fehlgeschlagen."), dismissButton: .default(Text("OK")))
-                }
-        }
+                Alert(title: Text("Fehler"), message: Text("Standortsbestimmung fehlgeschlagen."), dismissButton: .default(Text("OK")))
+            }
     }
 }
 
