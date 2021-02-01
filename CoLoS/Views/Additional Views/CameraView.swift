@@ -12,8 +12,12 @@ import AVFoundation
 final class CameraView: NSObject, UIViewRepresentable {
     
     let captureSession = AVCaptureSession()
+    var device: AVCaptureDevice!
+    
     let completionHandler: () -> Void
+    
     var mlManager: MLManager! = nil
+    let mlQueue = DispatchQueue(label: "com.timjaeger.MLQueue", qos: .utility, attributes: .concurrent)
     
     private let view = UIView()
     private var previewLayer: CALayer! = nil
@@ -31,7 +35,12 @@ final class CameraView: NSObject, UIViewRepresentable {
             logger.fault("CameraView: Could not get connection to the camera.")
             return
         }
+        
+        self.device = device
+        
         do {
+            
+            try device.lockForConfiguration() //Ermöglicht Veränderung des ISO-Werts und der Belichtungszeit (erleichtert Sonnenerkennung).
             
             let input = try AVCaptureDeviceInput(device: device)
             
@@ -45,7 +54,7 @@ final class CameraView: NSObject, UIViewRepresentable {
             }
             
             let output = AVCaptureVideoDataOutput()
-            output.setSampleBufferDelegate(self, queue: DispatchQueue.main) //Queue!!!
+            output.setSampleBufferDelegate(self, queue: mlQueue)
             
             if captureSession.canAddOutput(output) {
                 
@@ -81,9 +90,15 @@ extension CameraView: AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
-        if let layer = previewLayer {
-            
-            layer.frame = view.frame
+        DispatchQueue.main.async {
+        
+            if let layer = self.previewLayer {
+                
+                if layer.frame != self.view.frame {
+                        
+                    layer.frame = self.view.frame
+                }
+            }
         }
         
         let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)!

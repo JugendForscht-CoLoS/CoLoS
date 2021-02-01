@@ -21,7 +21,10 @@ class AlignmentManager {
         
         if manager.isDeviceMotionAvailable {
             
-            manager.startDeviceMotionUpdates(using: CMAttitudeReferenceFrame.xMagneticNorthZVertical, to: OperationQueue.main, withHandler: deviceMotionHasUpdated)//Queue!!!!
+            let measurementQueue = OperationQueue()
+            measurementQueue.name = "com.timjaeger.measurementQueue"
+            
+            manager.startDeviceMotionUpdates(using: CMAttitudeReferenceFrame.xMagneticNorthZVertical, to: measurementQueue, withHandler: deviceMotionHasUpdated)
         }
         else {
             
