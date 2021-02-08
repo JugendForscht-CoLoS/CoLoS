@@ -15,7 +15,7 @@ func smallAngle(_ alpha: Double) -> Double {
     }
     else if alpha < 0 {
         
-        return smallAngle(-1 * alpha)
+        return smallAngle(alpha + 2 * Double.pi)
     }
     else {
         

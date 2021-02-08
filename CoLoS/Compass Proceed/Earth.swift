@@ -30,11 +30,9 @@ class Earth {
         
         let p = Earth.getCartesianCoordinates(latitude: latitude, longitude: longitude)
         
-        let variable = sqrt(p.x * p.x + p.y * p.y)
         let a = rÄquator * rÄquator
         let b = rPoles * rPoles
-        let survaceGradient = -1 * (variable / (a * b) * sqrt((1 / b) - (variable * variable / a * b)))
         
-        return Vector(x: p.x, y: p.y, z: variable * (-1 * (1 / survaceGradient)))
+        return Vector(x: p.x, y: p.y, z: p.z * (a/b))
     }
 }

@@ -7,13 +7,18 @@
 
 import Foundation
 
-struct Vector {
+struct Vector: CustomStringConvertible {
     
     let x: Double
     let y: Double
     let z: Double
     
     let abs: Double
+    
+    var description: String {
+        
+        return "(\(Float(x))) (\(Float(y))) (\(Float(z)))"
+    }
     
     init(x: Double, y: Double, z: Double) {
         
@@ -62,10 +67,5 @@ struct Vector {
         let angle = acos((vector1 * vector2) / (vector1.abs * vector2.abs))
         
         return angle
-    }
-    
-    func toString() -> String { //Debugging only
-        
-        return "(\(Float(x))) (\(Float(y))) (\(Float(z)))"
     }
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Point {
+struct Point: CustomStringConvertible {
     
     let x: Double
     let y: Double
@@ -16,6 +16,11 @@ struct Point {
     let phi: Double
     let lambda: Double
     let r: Double
+    
+    var description: String {
+        
+        return "<cartesian> (\(Float(x)) | \(Float(y)) | \(Float(z))); <polar> (\(Float(toDegrees(lambda)))° | \(Float(toDegrees(phi)))° | \(Float(r)))"
+    }
     
     init(phi: Double, lambda: Double, r: Double) {
         
