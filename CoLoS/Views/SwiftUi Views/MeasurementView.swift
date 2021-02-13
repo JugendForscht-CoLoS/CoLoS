@@ -81,7 +81,7 @@ struct MeasurementView: View {
             
             sleep(1)
             
-            completionHandler(azimut, elevation, date, timeUTC)
+            completionHandler(azimut, elevation, timeUTC, date)
         }
     }
 }

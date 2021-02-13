@@ -48,11 +48,11 @@ class CoLoSManager {
         let azimut0 = azimut.0 + beta
         let azimut1 = azimut.1 + beta
         
-        let phi = atan( -1 * tan(elevation.1) * cos(azimut1 - Double.pi) - sin(azimut1 - Double.pi) * (azimut1 - azimut0) / (elevation.1 - elevation.0))
+        let phi = atan( -1 * tan(elevation.0) * cos(azimut0 - Double.pi) - sin(azimut0 - Double.pi) * (azimut1 - azimut0) / (elevation.1 - elevation.0))
         
         logger.notice("CoLoSManager(\(MeasurementProcedureView.taskID)): dA/dh = \((azimut1 - azimut0) / (elevation.1 - elevation.0))")
         
-        let woz = (648000 / (15 * Double.pi)) * (atan(sin(azimut1 - Double.pi) / (cos(azimut1 - Double.pi) * sin(phi) + tan(elevation.1) *  cos(phi))) + Double.pi)
+        let woz = (648000 / (15 * Double.pi)) * (atan(sin(azimut0 - Double.pi) / (cos(azimut0 - Double.pi) * sin(phi) + tan(elevation.0) *  cos(phi))) + Double.pi)
         
         logger.notice("CoLoSManager(\(MeasurementProcedureView.taskID)): woz = \(woz)s")
         
