@@ -13,13 +13,13 @@ struct TimerView: View {
     let completionHandler: () -> Void
     
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    @State var remainingSec = 600.0 // 10 min
+    @State var remainingSec = 3600.0 // 1h
     
     var body: some View {
         
         VStack {
             
-            ProgressView("verbleibende Zeit", value: (600.0 - remainingSec), total: 600.0)
+            ProgressView("verbleibende Zeit", value: (3600.0 - remainingSec), total: 3600.0)
                 .padding()
                 .onReceive(timer) { _ in
                         
