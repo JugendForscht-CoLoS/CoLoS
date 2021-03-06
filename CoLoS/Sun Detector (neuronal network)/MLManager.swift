@@ -26,31 +26,31 @@ class MLManager {
     
     func addNewImage(_ pixelBuffer: CVPixelBuffer) {
         
-       if referenceImage == nil {
-            
-            referenceImage = pixelBuffer
-            index = 0
-            return
-        }
-        if index == 3 {
-            
-            referenceImage = pixelBuffer
-        }
-        else if !checkForDifference(in: pixelBuffer, and: referenceImage) {
-        
-            guard let multiArray = getMLMultiArray(from: pixelBuffer) else { return }
-            
-            let width = CVPixelBufferGetWidth(pixelBuffer)
-            let height = CVPixelBufferGetWidth(pixelBuffer)
-            
-            guard let finalImage = resizeMLMultiArray(multiArray, width: width, height: height) else { return }
-            
-            guard let result = predictSun(of: finalImage) else { return }
-            
-            delegate.mlManagerDetectedSun(inRegion: getRegionOfSun(in: result))
-        }
-        
-        index += 1
+//       if referenceImage == nil {
+//
+//            referenceImage = pixelBuffer
+//            index = 0
+//            return
+//        }
+//        if index == 3 {
+//
+//            referenceImage = pixelBuffer
+//        }
+//        else if !checkForDifference(in: pixelBuffer, and: referenceImage) {
+//        
+//            guard let multiArray = getMLMultiArray(from: pixelBuffer) else { return }
+//
+//            let width = CVPixelBufferGetWidth(pixelBuffer)
+//            let height = CVPixelBufferGetWidth(pixelBuffer)
+//
+//            guard let finalImage = resizeMLMultiArray(multiArray, width: width, height: height) else { return }
+//
+//            guard let result = predictSun(of: finalImage) else { return }
+//
+//            delegate.mlManagerDetectedSun(inRegion: getRegionOfSun(in: result))
+//        }
+//
+//        index += 1
     }
     
     private func checkForDifference(in pixelBuffer1: CVPixelBuffer, and pixelBuffer2: CVPixelBuffer) -> Bool {
