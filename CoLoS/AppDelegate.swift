@@ -16,11 +16,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        let downloadQueue = DispatchQueue(label: "com.timjaeger.CoLoS.downloadQueue", qos: .utility)
+        let downloadQueue = DispatchQueue(label: "com.timjaeger.CoLoS.downloadQueue", qos: .utility) //Queue zum asynchronen Herunterladen der Offline-Map
         
         downloadQueue.async {
             
-            self.checkAndRefreshOfflineMap()
+            self.checkAndRefreshOfflineMap() //Offline-Map wird überprüft und ggf. geladen
         }
         
         return true
@@ -40,11 +40,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
-    func checkAndRefreshOfflineMap() {
+    func checkAndRefreshOfflineMap() {//Methode zum Überprüfen und Herunterladen der Offline-Map
         
-        let fileManager = FileManager.default
+        let fileManager = FileManager.default //Objekt zum Verwalten des Dateisystems
         
-        if let cacheUrl = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
+        if let cacheUrl = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first { //Das Cache-Verzeichnis wird als Speicher-Ort für die Offline.
             
             do {
                 
@@ -52,40 +52,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
                 url.appendPathComponent("map")
                 
-                if !fileManager.fileExists(atPath: url.path) {
+                if !fileManager.fileExists(atPath: url.path) { //Es wird überprüft, ob das Verzeichnis "map" existiert. Wenn nicht...
                     
-                    try fileManager.createDirectory(at: url, withIntermediateDirectories: false, attributes: [:])
+                    try fileManager.createDirectory(at: url, withIntermediateDirectories: false, attributes: [:]) //Das Verzeichnis "map" wird erstellt.
                 }
                 
-                for z in 0 ... 5 {
+                for z in 0 ... 5 { //z-Level von den Map-Tiles
                     
                     var zUrl = url
                     zUrl.appendPathComponent("\(z)")
                     
-                    if !fileManager.fileExists(atPath: zUrl.path) {
+                    if !fileManager.fileExists(atPath: zUrl.path) { //Es wird überprüft, ob das Verzeichnis existiert. Wenn nicht...
                         
-                        try fileManager.createDirectory(at: zUrl, withIntermediateDirectories: false, attributes: [:])
+                        try fileManager.createDirectory(at: zUrl, withIntermediateDirectories: false, attributes: [:]) //Das Verzeichnis wird erstellt.
                     }
                     
-                    for x in 0 ..< pow(a: 2, b: z) {
+                    for x in 0 ..< pow(a: 2, b: z) { //x-Level von den Map-Tiles
                         
                         var xUrl = zUrl
                         xUrl.appendPathComponent("\(x)")
                         
-                        if !fileManager.fileExists(atPath: xUrl.path) {
+                        if !fileManager.fileExists(atPath: xUrl.path) { //Es wird überprüft, ob das Verzeichnis existiert. Wenn nicht...
                             
-                            try fileManager.createDirectory(at: xUrl, withIntermediateDirectories: false, attributes: [:])
+                            try fileManager.createDirectory(at: xUrl, withIntermediateDirectories: false, attributes: [:]) //Das Verzeichnis wird erstellt.
                         }
                         
-                        for y in 0 ..< pow(a: 2, b: z) {
+                        for y in 0 ..< pow(a: 2, b: z) { //y-Level von den Map-Tiles
                             
                             var yUrl = xUrl
                             yUrl.appendPathComponent("\(y).png")
                             
-                            if !fileManager.fileExists(atPath: yUrl.path) {
+                            if !fileManager.fileExists(atPath: yUrl.path) { //Es wird überprüft, ob das Map-Tile existiert. Wenn nicht...
                                 
-                                let content = try Data(contentsOf: URL(string: "https://tile.openstreetmap.org/\(z)/\(x)/\(y).png")!)
-                                fileManager.createFile(atPath: yUrl.path, contents: content, attributes: [:])
+                                let content = try Data(contentsOf: URL(string: "https://tile.openstreetmap.org/\(z)/\(x)/\(y).png")!) //Das Map-Tile wird von OpenStreetMaps heruntergeladen.
+                                fileManager.createFile(atPath: yUrl.path, contents: content, attributes: [:]) //Das Map-Tile wird gespeichert.
                             }
                         }
                     }
