@@ -11,9 +11,9 @@ import SwiftUI
 
 final class MapView: NSObject, UIViewRepresentable {
     
-    let location: ComputedLocation?
-    let mapView: MKMapView
-    var tileRenderer: MKTileOverlayRenderer! = nil
+    let location: ComputedLocation? // repräsentiert den zu markierenden Standort
+    let mapView: MKMapView // Map-Objekt
+    var tileRenderer: MKTileOverlayRenderer! = nil // Objekt zum Erstellen der Offline-Map aus den geladenen Map-Tiles
     
     init(_ location: ComputedLocation?) {
         
@@ -27,13 +27,15 @@ final class MapView: NSObject, UIViewRepresentable {
         
         mapView.isRotateEnabled = false
         
-        let overlay = OSMTileOverlay()
+        let overlay = OSMTileOverlay() // Offline-Map-Tiles
         overlay.canReplaceMapContent = true
         mapView.addOverlay(overlay, level: .aboveLabels)
         tileRenderer = MKTileOverlayRenderer(tileOverlay: overlay)
         mapView.delegate = self
         
         if let location = location {
+            
+            // Annotation wird erstellt und die Karte ausgerichtet.
             
             let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
             mapView.setRegion(region, animated: true)
@@ -59,20 +61,22 @@ extension MapView: MKMapViewDelegate {
 
 class OSMTileOverlay: MKTileOverlay {
     
-    override func url(forTilePath path: MKTileOverlayPath) -> URL {
+    override func url(forTilePath path: MKTileOverlayPath) -> URL { // lädt die Map-Tiles
         
-        if path.z <= 5 {
+        if path.z <= 5 { // Es wurden nur Map-Tiles für z <= 5 geladen.
             
-            let fileManager = FileManager.default
+            let fileManager = FileManager.default // Objekt zum Verwalten des Dateisystems
             
-            if var url = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
+            if var url = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first { // Url vom Cache-Verzeichnis
+                
+                // Pfad wird erstellt
                 
                 url.appendPathComponent("map")
                 url.appendPathComponent("\(path.z)")
                 url.appendPathComponent("\(path.x)")
                 url.appendPathComponent("\(path.y).png")
                 
-                if fileManager.fileExists(atPath: url.path) {
+                if fileManager.fileExists(atPath: url.path) { // Wenn das Map-Tile existiert...
                     
                     return url
                 }

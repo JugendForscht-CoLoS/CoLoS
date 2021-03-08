@@ -10,20 +10,20 @@ import CoreLocation
 
 struct LocationView: View {
     
-    var location: ComputedLocation?
-    @State var wasNotSuccessful: Bool = false
+    var location: ComputedLocation? // Standort
+    @State var wasNotSuccessful: Bool = false // zeigt an, ob die Standortsbestimmung ein valides Ergebnis ergeben hat
     
     init(location: ComputedLocation) {
         
         self.location = location
         
-        if !(location.coordinate.latitude >= -90 && location.coordinate.latitude <= 90) {
+        if !(location.coordinate.latitude >= -90 && location.coordinate.latitude <= 90) { // Wenn der Breitengrad falsch ist...
             
             self.location = nil
             _wasNotSuccessful = State(initialValue: true)
             logger.fault("LocationView(\(MeasurementProcedureView.taskID, privacy: .public)): Latitude out of bounds.")
         }
-        if !(location.coordinate.longitude >= -180 && location.coordinate.longitude <= 180) {
+        if !(location.coordinate.longitude >= -180 && location.coordinate.longitude <= 180) { // Wenn der Längengrad falsch ist...
             
             self.location = nil
             _wasNotSuccessful = State(initialValue: true)

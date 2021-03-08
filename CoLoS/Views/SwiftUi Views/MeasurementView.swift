@@ -10,12 +10,12 @@ import AVFoundation
 
 struct MeasurementView: View {
     
-    let completionHandler: (Double, Double, Double, Double) -> Void
-    let alignmentManager = AlignmentManager()
+    let completionHandler: (Double, Double, Double, Double) -> Void // wird ausgeführt, wenn gemessen wurde
+    let alignmentManager = AlignmentManager() // Objekt zum Messen von Azimut und Elevation
     
-    let realation = UIScreen.main.bounds.height / UIScreen.main.bounds.width
+    let relation = UIScreen.main.bounds.height / UIScreen.main.bounds.width
     
-    @State var isSunCentered = false
+    @State var isSunCentered = false // ob die Sonne mittig ausgerichtet ist
     
     var body: some View {
         
@@ -26,7 +26,7 @@ struct MeasurementView: View {
                 Spacer()
                 
                 CameraView(sunIsCentered)
-                    .frame(width: 300, height: 300 * realation, alignment: .center)
+                    .frame(width: 300, height: 300 * relation, alignment: .center)
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.white, lineWidth: 4))
                     .shadow(radius: 7)
@@ -61,11 +61,11 @@ struct MeasurementView: View {
         }
     }
     
-    func sunIsCentered() {
+    func sunIsCentered() { // Wenn der Messen-Button gedrückt wurde, oder wenn das neuronale Netz die Sonne in der Mitte erkannt hat (noch nicht implementiert)...
         
-        let dateObj = Date()
-        let date = Double(dateObj.dateInSec)
-        let timeUTC = Double(dateObj.timeInSec)
+        let dateObj = Date() // Datum
+        let date = Double(dateObj.dateInSec) // Datum in Sekunden
+        let timeUTC = Double(dateObj.timeInSec) // UTC in Sekunden
         
         let elevation = alignmentManager.elevation
         let azimut = alignmentManager.azimut
@@ -81,7 +81,7 @@ struct MeasurementView: View {
             
             sleep(1)
             
-            completionHandler(azimut, elevation, timeUTC, date)
+            completionHandler(azimut, elevation, timeUTC, date) // Messdaten werden übertragen.
         }
     }
 }

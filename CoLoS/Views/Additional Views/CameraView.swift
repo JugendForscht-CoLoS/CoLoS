@@ -12,11 +12,11 @@ import AVFoundation
 final class CameraView: NSObject, UIViewRepresentable {
     
     let captureSession = AVCaptureSession()
-    var device: AVCaptureDevice!
+    var device: AVCaptureDevice! // Verweis auf die Kamera
     
-    let completionHandler: () -> Void
+    let completionHandler: () -> Void // wird ausgeführt, wenn das neuronale Netz die Sonne in der Mitte erkannt hat
     
-    var mlManager: MLManager! = nil
+    var mlManager: MLManager! = nil // Onjekt zum Verwenden des neuronalen Netzes
     let mlQueue = DispatchQueue(label: "com.timjaeger.MLQueue", qos: .utility, attributes: .concurrent)
     
     private let view = UIView()
@@ -44,7 +44,7 @@ final class CameraView: NSObject, UIViewRepresentable {
             
             let input = try AVCaptureDeviceInput(device: device)
             
-            if captureSession.canAddInput(input) {
+            if captureSession.canAddInput(input) { // Kamera-Input wird hinzugefügt.
                 
                 captureSession.addInput(input)
             }
@@ -56,7 +56,7 @@ final class CameraView: NSObject, UIViewRepresentable {
             let output = AVCaptureVideoDataOutput()
             output.setSampleBufferDelegate(self, queue: mlQueue)
             
-            if captureSession.canAddOutput(output) {
+            if captureSession.canAddOutput(output) { // Kamera-Output wird hinzugefügt.
                 
                 captureSession.addOutput(output)
             }
@@ -75,7 +75,7 @@ final class CameraView: NSObject, UIViewRepresentable {
     
     func makeUIView(context: Context) -> UIView {
         
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) // Kamera-Bild wird zu der View hinzugefügt.
         view.layer.addSublayer(previewLayer)
         
         return view
@@ -88,9 +88,11 @@ final class CameraView: NSObject, UIViewRepresentable {
 
 extension CameraView: AVCaptureVideoDataOutputSampleBufferDelegate {
     
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) { // wird immer dann aufgerufen, wenn die Kamera ein neues Bild aufgenommen hat (mehrmals pro Sekunde)
         
         DispatchQueue.main.async {
+            
+            // UI wird angepasst
         
             if let layer = self.previewLayer {
                 
@@ -101,17 +103,17 @@ extension CameraView: AVCaptureVideoDataOutputSampleBufferDelegate {
             }
         }
         
-        let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)!
+        let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)! // PixelBuffer wird erstellt
         
-        mlManager.addNewImage(pixelBuffer)
+        mlManager.addNewImage(pixelBuffer) // Das Bild wird an das neuronale Netz übergeben.
     }
 }
 
 extension CameraView: MLManagerDelegate {
     
-    func mlManagerDetectedSun(inRegion region: CGRect) {
+    func mlManagerDetectedSun(inRegion region: CGRect) { // wird immer dann ausgeführt, wenn das neuronale Netz die Sonne erkannt hat
         
-        if region.isEmpty { //Hier wird überprüft ob Sonne mittig ist (das ist natürlich noch nicht richtig und dient als Platzhalter)
+        if region.isEmpty { //Hier soll überprüft werden, ob die Sonne mittig ist (das ist natürlich noch nicht richtig und dient als Platzhalter)
             
             captureSession.stopRunning()
             completionHandler()

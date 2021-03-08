@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State var isWarningShowing = true
+    @State var isWarningShowing = true // ...ob der Alert angezeigt wird.
 
     
     var body: some View {
@@ -26,7 +26,7 @@ struct ContentView: View {
                 
                 Spacer()
             
-                NavigationLink(destination: MeasurementProcedureView()) {
+                NavigationLink(destination: MeasurementProcedureView()) { // Verweis auf MeasurementProcedureView
                 
                     Text("Standort berechnen")
                         .padding()

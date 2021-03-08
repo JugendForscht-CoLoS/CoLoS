@@ -12,27 +12,27 @@ struct MeasurementProcedureView: View {
     
     static var taskID = UUID()
     
-    @State var viewType = MeasurementTypes.measurementView
-    @State var firstMeasurement = true
-    @State var location: ComputedLocation! = nil
+    @State var viewType = MeasurementTypes.measurementView // zeigt die aktuelle View an
+    @State var firstMeasurement = true // zeigt an, ob es die erste Messung oder die Zweite ist
+    @State var location: ComputedLocation! = nil // der berechnete Standort
     
-    let manager = CoLoSManager()
+    let manager = CoLoSManager() // Objekt zum Berechnen des Standorts
     
     var body: some View {
         
-        if viewType == .measurementView {
+        if viewType == .measurementView { // Beim Messen...
             
             MeasurementView(completionHandler: measurementCompleted)
                 .navigationTitle("Sonnen-Messung")
                 .navigationBarBackButtonHidden(true)
         }
-        if viewType == .timerView {
+        if viewType == .timerView { // Beim Warte...
             
             TimerView(completionHandler: timerStoped)
                 .navigationTitle("Wartezeit")
                 .navigationBarBackButtonHidden(true)
         }
-        if viewType == .locationView {
+        if viewType == .locationView { // Wenn der Standort berechnet wurde...
             
             LocationView(location: location)
                 .navigationTitle("Standort")
@@ -40,32 +40,32 @@ struct MeasurementProcedureView: View {
         }
     }
     
-    func timerStoped() {
+    func timerStoped() { // Wenn die Wartezeit abgelaufen ist
         
-        viewType = .measurementView
+        viewType = .measurementView // die View wird auf MeasurementView gewechselt
     }
     
-    func measurementCompleted(azimut: Double, elevation: Double, time: Double, date: Double) {
+    func measurementCompleted(azimut: Double, elevation: Double, time: Double, date: Double) { // Wenn gemessen wurde...
         
         DispatchQueue.main.async {
             
-            if firstMeasurement {
+            if firstMeasurement { // erste Messung
                 
-                MeasurementProcedureView.taskID = UUID()
+                MeasurementProcedureView.taskID = UUID() // taskID ist nur für das Logging interessant
                 
-                viewType = .timerView
+                viewType = .timerView // die View wird auf TimerView gewechselt
                 firstMeasurement = false
                 
-                manager.addFirstMeasurement(azimut: azimut, elevation: elevation, time: time, date: date)
+                manager.addFirstMeasurement(azimut: azimut, elevation: elevation, time: time, date: date) // Messdaten werden gespeichert
                 logger.notice("Measurement1(\(MeasurementProcedureView.taskID, privacy: .public)): azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
             }
-            else {
+            else { // zweite Messung
                 
-                manager.addSecondMeasurement(azimut: azimut, elevation: elevation)
+                manager.addSecondMeasurement(azimut: azimut, elevation: elevation) // Messdaten werden gespeichert
                 logger.notice("Measurement2(\(MeasurementProcedureView.taskID, privacy: .public)): azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
                 
-                location = manager.computeUsersLocation()
-                viewType = .locationView
+                location = manager.computeUsersLocation() // Standort wird berechnet
+                viewType = .locationView // die View wird auf TimerView gewechselt
             }
         }
     }
@@ -77,7 +77,7 @@ struct MeasurementProcedureView_Previews: PreviewProvider {
     }
 }
 
-enum MeasurementTypes {
+enum MeasurementTypes { // Arten von Views
     
     case measurementView
     case timerView

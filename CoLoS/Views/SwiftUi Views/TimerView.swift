@@ -10,10 +10,10 @@ import AVFoundation
 
 struct TimerView: View {
     
-    let completionHandler: () -> Void
+    let completionHandler: () -> Void // wird ausgeführt, wenn die Wartezeit abgelaufen ist
     
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    @State var remainingSec = 3600.0 // 1h
+    @State var remainingSec = 3600.0 // Wartezeit (1h)
     
     var body: some View {
         
@@ -21,13 +21,13 @@ struct TimerView: View {
             
             ProgressView("verbleibende Zeit", value: (3600.0 - remainingSec), total: 3600.0)
                 .padding()
-                .onReceive(timer) { _ in
+                .onReceive(timer) { _ in // wird jede Sekunde ausgeführt
                         
-                    if self.remainingSec > 0 {
+                    if self.remainingSec > 0 { // Wenn die Zeit noch läuft...
                             
                         self.remainingSec -= 1
                     }
-                    else if self.remainingSec == 0 {
+                    else if self.remainingSec == 0 { // Wenn die Zeit abgelaufen ist...
                             
                         let systemSound: SystemSoundID = 1304
                         AudioServicesPlaySystemSound(systemSound)
