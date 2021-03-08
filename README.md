@@ -1,7 +1,7 @@
 # CoLoS
 
 ##### Eine App zur unabhängigen Standortsbestimmung!
-![alt text] (https://github.com/JugendForscht-CoLoS/CoLoS/blob/main/AppIcons/180.png "CoLoS")
+![CoLoS-Icon](https://github.com/JugendForscht-CoLoS/CoLoS/blob/main/AppIcons/180.png "CoLoS")
 
 ## Struktur
 
@@ -9,4 +9,4 @@
 * __CoLoS.xcodeproj___: XCode Setup
 * __CoLoS__:  der Code
 * __Images__: weitere Bilder
-* __Resources__: das [neuronale Netz zur Sonnenerkennung] (https://github.com/JugendForscht-CoLoS/SunDetection-NeuralNetwork)
+* __Resources__: das [neuronale Netz zur Sonnenerkennung](https://github.com/JugendForscht-CoLoS/SunDetection-NeuralNetwork)
