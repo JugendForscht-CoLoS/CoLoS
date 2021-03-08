@@ -10,7 +10,7 @@ import CoreML
 
 extension MLMultiArray {
     
-    func printRGBImage() -> String {
+    func printRGBImage() -> String { // nur zum Debugging
         
         //ToDo
         return ""
