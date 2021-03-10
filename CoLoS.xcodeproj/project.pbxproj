@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1E071D1125A2848100F98AF3 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E071D1025A2848100F98AF3 /* Date.swift */; };
+		1E2D3A8825F9430800EFFAEA /* CVPixelBuffer+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2D3A8725F9430800EFFAEA /* CVPixelBuffer+Resize.swift */; };
+		1E2D3A8B25F9438F00EFFAEA /* CVPixelBuffer+Create.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E2D3A8A25F9438F00EFFAEA /* CVPixelBuffer+Create.swift */; };
 		1E6D3DA325AE4BC6005E09EB /* MLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6D3DA225AE4BC6005E09EB /* MLManager.swift */; };
 		1E74A27425B0ACDC00BEF767 /* default.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74A27325B0ACDC00BEF767 /* default.png */; };
 		1E77A41925B5F0FB00418E13 /* MeasurementProcedureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E77A41825B5F0FB00418E13 /* MeasurementProcedureView.swift */; };
@@ -32,11 +34,12 @@
 		1EB7570825A0E4DE00E6D6C0 /* TimeEquation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7570725A0E4DE00E6D6C0 /* TimeEquation.swift */; };
 		1EB7570C25A0E6E800E6D6C0 /* RegulaFalsi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7570B25A0E6E800E6D6C0 /* RegulaFalsi.swift */; };
 		1EDFBA2625AF9A4B009B0F7B /* Angle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDFBA2525AF9A4B009B0F7B /* Angle.swift */; };
-		1EF3651B25E9649500F7B1DD /* MLMultiArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF3651A25E9649500F7B1DD /* MLMultiArray.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1E071D1025A2848100F98AF3 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		1E2D3A8725F9430800EFFAEA /* CVPixelBuffer+Resize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CVPixelBuffer+Resize.swift"; sourceTree = "<group>"; };
+		1E2D3A8A25F9438F00EFFAEA /* CVPixelBuffer+Create.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CVPixelBuffer+Create.swift"; sourceTree = "<group>"; };
 		1E6D3DA225AE4BC6005E09EB /* MLManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLManager.swift; sourceTree = "<group>"; };
 		1E74A27325B0ACDC00BEF767 /* default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = default.png; path = Images/default.png; sourceTree = SOURCE_ROOT; };
 		1E77A41825B5F0FB00418E13 /* MeasurementProcedureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementProcedureView.swift; sourceTree = "<group>"; };
@@ -69,7 +72,6 @@
 		1EB7570725A0E4DE00E6D6C0 /* TimeEquation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeEquation.swift; sourceTree = "<group>"; };
 		1EB7570B25A0E6E800E6D6C0 /* RegulaFalsi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegulaFalsi.swift; sourceTree = "<group>"; };
 		1EDFBA2525AF9A4B009B0F7B /* Angle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Angle.swift; sourceTree = "<group>"; };
-		1EF3651A25E9649500F7B1DD /* MLMultiArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLMultiArray.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -192,10 +194,11 @@
 		1EB756D625A0CD4D00E6D6C0 /* Sun Detector (neuronal network) */ = {
 			isa = PBXGroup;
 			children = (
+				1E2D3A8A25F9438F00EFFAEA /* CVPixelBuffer+Create.swift */,
+				1E2D3A8725F9430800EFFAEA /* CVPixelBuffer+Resize.swift */,
 				1E80CEA625E6D08100D5B55A /* SunDetector.mlmodel */,
 				1EB756D825A0CDEE00E6D6C0 /* README.md */,
 				1E6D3DA225AE4BC6005E09EB /* MLManager.swift */,
-				1EF3651A25E9649500F7B1DD /* MLMultiArray.swift */,
 			);
 			path = "Sun Detector (neuronal network)";
 			sourceTree = "<group>";
@@ -283,9 +286,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				1EB756EF25A0E31800E6D6C0 /* TimerView.swift in Sources */,
+				1E2D3A8825F9430800EFFAEA /* CVPixelBuffer+Resize.swift in Sources */,
 				1EDFBA2625AF9A4B009B0F7B /* Angle.swift in Sources */,
-				1EF3651B25E9649500F7B1DD /* MLMultiArray.swift in Sources */,
 				1EB756B725A0CB1E00E6D6C0 /* AppDelegate.swift in Sources */,
+				1E2D3A8B25F9438F00EFFAEA /* CVPixelBuffer+Create.swift in Sources */,
 				1EB7570125A0E47F00E6D6C0 /* Earth.swift in Sources */,
 				1EB756E625A0E27500E6D6C0 /* AlignmentManager.swift in Sources */,
 				1EB756EC25A0E30400E6D6C0 /* MeasurementView.swift in Sources */,
