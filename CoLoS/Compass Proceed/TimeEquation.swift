@@ -6,7 +6,9 @@
 //
 
 import Foundation
-
+// die mit einer Fourieranalyse und einer Simulation der Erdumlaufbahn rekonstruierte Zeitgleichung.
+// Parameter ist das Datum in Sekunden nach Jahresbeginn
+// @return die Differenz von mittlerer und wahrer Ortszeit in Sekunden(?)
 func ZG(_ x: Double) -> Double {
     
     let t = (x - 16027200) * 1000
