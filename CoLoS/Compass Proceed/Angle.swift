@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+// um einen Winkel zwischen 0° und 360° zu definieren
 func smallAngle(_ alpha: Double) -> Double {
     
     if alpha >= 2 * Double.pi {
@@ -22,12 +22,12 @@ func smallAngle(_ alpha: Double) -> Double {
         return alpha
     }
 }
-
+// Umrechnung von ° in rad
 func toRadians(_ degrees: Double) -> Double {
     
     return (Double.pi / 180.0) * degrees
 }
-
+// Umrechnung von rad in °
 func toDegrees(_ radians: Double) -> Double {
     
     return (180.0 / Double.pi) * radians
