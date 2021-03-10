@@ -8,10 +8,10 @@
 import Foundation
 
 class Earth {
-    
+    // Radius der Pole und des Äquators
     private static let rPoles = 6357.0 //km
     private static let rÄquator = 6378.0 //km
-    
+    // bei übergebenem Breiten- und Längengrad wird Punkt in kartesische Koordinaten umgerechnet und zurückgegeben
     static func getCartesianCoordinates(latitude: Double, longitude: Double) -> Point {
         
         let phi = toRadians(latitude)
@@ -25,7 +25,7 @@ class Earth {
         
         return Point(phi: phi, lambda: lambda, r: r)
     }
-    
+    // @return der Normalvektor einer Ebene eines beliebigen Ortes (Breiten- / Längengrad) auf der Erde
     static func getNormalVectorOfTangentailPlane(latitude: Double, longitude: Double) -> Vector {
         
         let p = Earth.getCartesianCoordinates(latitude: latitude, longitude: longitude)
