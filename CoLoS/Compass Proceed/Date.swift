@@ -8,7 +8,7 @@
 import Foundation
 
 extension Date {
-    
+    // gibt die Zeit in Sekunden nach 00:00Uhr zurück
     var timeInSec: Int {
         
         get {
@@ -31,7 +31,7 @@ extension Date {
             return time
         }
     }
-    
+    // gibt die Zeit in Sekunden nach Jahresbeginn zurück
     var dateInSec: Int {
         
         get {
