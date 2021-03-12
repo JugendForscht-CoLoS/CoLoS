@@ -14,15 +14,16 @@ final class CameraView: NSObject, UIViewRepresentable {
     let captureSession = AVCaptureSession()
     var device: AVCaptureDevice! // Verweis auf die Kamera
     
-    let completionHandler: () -> Void // wird ausgeführt, wenn das neuronale Netz die Sonne in der Mitte erkannt hat
+    let completionHandler: (Measurement) -> Void // wird ausgeführt, wenn das neuronale Netz die Sonne in der Mitte erkannt hat
+    let alignmentManager = AlignmentManager()
     
     var mlManager: MLManager! = nil // Onjekt zum Verwenden des neuronalen Netzes
     let mlQueue = DispatchQueue(label: "com.timjaeger.MLQueue", qos: .utility, attributes: .concurrent)
     
-    private let view = UIView()
+    private let view = LayerView()
     private var previewLayer: CALayer! = nil
     
-    init(_ completionHandler: @escaping () -> Void) {
+    init(_ completionHandler: @escaping (Measurement) -> Void) {
         
         self.completionHandler = completionHandler
         
@@ -90,33 +91,31 @@ extension CameraView: AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) { // wird immer dann aufgerufen, wenn die Kamera ein neues Bild aufgenommen hat (mehrmals pro Sekunde)
         
-        DispatchQueue.main.async {
-            
-            // UI wird angepasst
-        
-            if let layer = self.previewLayer {
-                
-                if layer.frame != self.view.frame {
-                        
-                    layer.frame = self.view.frame
-                }
-            }
-        }
-        
         let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)! // PixelBuffer wird erstellt
         
-        mlManager.addNewImage(pixelBuffer) // Das Bild wird an das neuronale Netz übergeben.
+        let date = Date()
+        
+        let dateInSec = date.dateInSec
+        let timeUTC = date.timeInSec
+        
+        let measurement = Measurement(azimut: alignmentManager.azimut, elevation: alignmentManager.elevation, date: dateInSec, time: timeUTC)
+        
+        mlManager.addNewImage(pixelBuffer, withMeasurement: measurement) // Das Bild wird an das neuronale Netz übergeben.
     }
 }
 
 extension CameraView: MLManagerDelegate {
     
-    func mlManagerDetectedSun(inRegion region: CGRect) { // wird immer dann ausgeführt, wenn das neuronale Netz die Sonne erkannt hat
+    func mlManagerDetectedSun(_ centre: CGPoint, withMeasurement measurement: Measurement) { // wird immer dann ausgeführt, wenn das neuronale Netz die Sonne erkannt hat
         
-        if region.isEmpty { //Hier soll überprüft werden, ob die Sonne mittig ist (das ist natürlich noch nicht richtig und dient als Platzhalter)
+        let imageCentre = CGPoint(x: 112, y: 112)
+        
+        let distance = sqrt((imageCentre.x - centre.x) * (imageCentre.x - centre.x) + (imageCentre.y - centre.y) * (imageCentre.y - centre.y))
+        
+        if distance < mlManager.accuracy {
             
+            completionHandler(measurement)
             captureSession.stopRunning()
-            completionHandler()
         }
     }
 }

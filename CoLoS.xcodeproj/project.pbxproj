@@ -14,6 +14,8 @@
 		1E74A27425B0ACDC00BEF767 /* default.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74A27325B0ACDC00BEF767 /* default.png */; };
 		1E77A41925B5F0FB00418E13 /* MeasurementProcedureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E77A41825B5F0FB00418E13 /* MeasurementProcedureView.swift */; };
 		1E80CEA725E6D08100D5B55A /* SunDetector.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1E80CEA625E6D08100D5B55A /* SunDetector.mlmodel */; };
+		1E843AE725FBBA1B00A69C54 /* LayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E843AE625FBBA1B00A69C54 /* LayerView.swift */; };
+		1E843AEA25FBC6CF00A69C54 /* Measurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E843AE925FBC6CF00A69C54 /* Measurement.swift */; };
 		1EB756B725A0CB1E00E6D6C0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB756B625A0CB1E00E6D6C0 /* AppDelegate.swift */; };
 		1EB756B925A0CB1E00E6D6C0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB756B825A0CB1E00E6D6C0 /* SceneDelegate.swift */; };
 		1EB756BD25A0CB2000E6D6C0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1EB756BC25A0CB2000E6D6C0 /* Assets.xcassets */; };
@@ -44,6 +46,8 @@
 		1E74A27325B0ACDC00BEF767 /* default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = default.png; path = Images/default.png; sourceTree = SOURCE_ROOT; };
 		1E77A41825B5F0FB00418E13 /* MeasurementProcedureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementProcedureView.swift; sourceTree = "<group>"; };
 		1E80CEA625E6D08100D5B55A /* SunDetector.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = SunDetector.mlmodel; path = Resources/SunDetector.mlmodel; sourceTree = SOURCE_ROOT; };
+		1E843AE625FBBA1B00A69C54 /* LayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayerView.swift; sourceTree = "<group>"; };
+		1E843AE925FBC6CF00A69C54 /* Measurement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Measurement.swift; sourceTree = "<group>"; };
 		1EB756B325A0CB1E00E6D6C0 /* CoLoS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoLoS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1EB756B625A0CB1E00E6D6C0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1EB756B825A0CB1E00E6D6C0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -164,6 +168,7 @@
 			children = (
 				1EB756DC25A0E21D00E6D6C0 /* CameraView.swift */,
 				1EB756DF25A0E22B00E6D6C0 /* MapView.swift */,
+				1E843AE625FBBA1B00A69C54 /* LayerView.swift */,
 			);
 			path = "Additional Views";
 			sourceTree = "<group>";
@@ -187,6 +192,7 @@
 			children = (
 				1EB756D925A0CDFA00E6D6C0 /* README.md */,
 				1EB756E525A0E27500E6D6C0 /* AlignmentManager.swift */,
+				1E843AE925FBC6CF00A69C54 /* Measurement.swift */,
 			);
 			path = "Alignment Measurement";
 			sourceTree = "<group>";
@@ -194,11 +200,11 @@
 		1EB756D625A0CD4D00E6D6C0 /* Sun Detector (neuronal network) */ = {
 			isa = PBXGroup;
 			children = (
-				1E2D3A8A25F9438F00EFFAEA /* CVPixelBuffer+Create.swift */,
-				1E2D3A8725F9430800EFFAEA /* CVPixelBuffer+Resize.swift */,
+				1E6D3DA225AE4BC6005E09EB /* MLManager.swift */,
 				1E80CEA625E6D08100D5B55A /* SunDetector.mlmodel */,
 				1EB756D825A0CDEE00E6D6C0 /* README.md */,
-				1E6D3DA225AE4BC6005E09EB /* MLManager.swift */,
+				1E2D3A8A25F9438F00EFFAEA /* CVPixelBuffer+Create.swift */,
+				1E2D3A8725F9430800EFFAEA /* CVPixelBuffer+Resize.swift */,
 			);
 			path = "Sun Detector (neuronal network)";
 			sourceTree = "<group>";
@@ -297,12 +303,14 @@
 				1EB756B925A0CB1E00E6D6C0 /* SceneDelegate.swift in Sources */,
 				1E80CEA725E6D08100D5B55A /* SunDetector.mlmodel in Sources */,
 				1EB756E025A0E22B00E6D6C0 /* MapView.swift in Sources */,
+				1E843AEA25FBC6CF00A69C54 /* Measurement.swift in Sources */,
 				1EB756F225A0E35A00E6D6C0 /* LocationView.swift in Sources */,
 				1E6D3DA325AE4BC6005E09EB /* MLManager.swift in Sources */,
 				1EB7570525A0E4AD00E6D6C0 /* ComputedLocation.swift in Sources */,
 				1EB7570825A0E4DE00E6D6C0 /* TimeEquation.swift in Sources */,
 				1EB756D025A0CC7800E6D6C0 /* ContentView.swift in Sources */,
 				1EB756E325A0E25500E6D6C0 /* CoLoSManager.swift in Sources */,
+				1E843AE725FBBA1B00A69C54 /* LayerView.swift in Sources */,
 				1EB756F625A0E3D200E6D6C0 /* Vector.swift in Sources */,
 				1E071D1125A2848100F98AF3 /* Date.swift in Sources */,
 				1E77A41925B5F0FB00418E13 /* MeasurementProcedureView.swift in Sources */,

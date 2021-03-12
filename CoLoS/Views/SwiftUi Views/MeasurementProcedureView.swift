@@ -45,7 +45,7 @@ struct MeasurementProcedureView: View {
         viewType = .measurementView // die View wird auf MeasurementView gewechselt
     }
     
-    func measurementCompleted(azimut: Double, elevation: Double, time: Double, date: Double) { // Wenn gemessen wurde...
+    func measurementCompleted(_ measurement: Measurement) { // Wenn gemessen wurde...
         
         DispatchQueue.main.async {
             
@@ -56,13 +56,13 @@ struct MeasurementProcedureView: View {
                 viewType = .timerView // die View wird auf TimerView gewechselt
                 firstMeasurement = false
                 
-                manager.addFirstMeasurement(azimut: azimut, elevation: elevation, time: time, date: date) // Messdaten werden gespeichert
-                logger.notice("Measurement1(\(MeasurementProcedureView.taskID, privacy: .public)): azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
+                manager.addFirstMeasurement(measurement) // Messdaten werden gespeichert
+                logger.notice("Measurement1(\(MeasurementProcedureView.taskID, privacy: .public)): azimut = \(toDegrees(measurement.azimut))°; elevation = \(toDegrees(measurement.elevation))°; time = \(measurement.time)s; date = \(measurement.date)s")
             }
             else { // zweite Messung
                 
-                manager.addSecondMeasurement(azimut: azimut, elevation: elevation) // Messdaten werden gespeichert
-                logger.notice("Measurement2(\(MeasurementProcedureView.taskID, privacy: .public)): azimut = \(toDegrees(azimut))°; elevation = \(toDegrees(elevation))°; time = \(time)s; date = \(date)s")
+                manager.addSecondMeasurement(measurement) // Messdaten werden gespeichert
+                logger.notice("Measurement2(\(MeasurementProcedureView.taskID, privacy: .public)): azimut = \(toDegrees(measurement.azimut))°; elevation = \(toDegrees(measurement.elevation))°; time = \(measurement.time)s; date = \(measurement.date)s")
                 
                 location = manager.computeUsersLocation() // Standort wird berechnet
                 viewType = .locationView // die View wird auf TimerView gewechselt

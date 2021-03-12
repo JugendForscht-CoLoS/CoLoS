@@ -9,25 +9,47 @@ import Foundation
 import CoreGraphics
 import CoreVideo
 import CoreML
+import Vision
+import AVFoundation
 
-class MLManager {
+class MLManager: NSObject {
     
     var delegate: MLManagerDelegate
     
-    private var referenceImage: CVPixelBuffer! = nil
-
-    let size: (Int, Int) = (128, 128)
+    let accuracy: CGFloat = 5.0
+    
+    private let sequenceRequestHandler = VNSequenceRequestHandler()
+    
+    private var referenceImage: CVPixelBuffer?
+    private var transpositionHistory: [CGPoint] = []
+    private let maximumhistoryLength = 30
     
     init(delegate: MLManagerDelegate) {
         
         self.delegate = delegate
+        super.init()
     }
     
-    func addNewImage(_ pixelBuffer: CVPixelBuffer) { // fügt ein neues Bild hinzu
+    func addNewImage(_ pixelBuffer: CVPixelBuffer, withMeasurement measurement: Measurement) { // fügt ein neues Bild hinzu
         
-        guard let referenceImage = referenceImage else { return }
+        guard referenceImage != nil else {
+            
+            referenceImage = pixelBuffer
+            return
+        }
         
-        if !checkForDifference(in: pixelBuffer, and: referenceImage) { // Wenn das Smartphone still gehalten wird
+        let registrationRequest = VNTranslationalImageRegistrationRequest(targetedCVPixelBuffer: pixelBuffer, completionHandler: requestHasFinishedExecuting)
+        
+        do {
+            
+            try sequenceRequestHandler.perform([registrationRequest], on: referenceImage!)
+        }
+        catch {
+            
+            logger.error("MLManager: An error occured: \(error.localizedDescription, privacy: .public)")
+        }
+        
+        if sceneStabilityArchieved() { // Wenn das Smartphone still gehalten wird
             
             guard let resizedPixelBuffer = resizePixelBuffer(pixelBuffer, width: 224, height: 224) else {
                 
@@ -40,16 +62,33 @@ class MLManager {
             
             guard let result = predictSun(of: multiArray) else { return }
 
-            delegate.mlManagerDetectedSun(inRegion: getRegionOfSun(in: result))
+            delegate.mlManagerDetectedSun(getSunCentre(in: result), withMeasurement: measurement)
         }
+        
+        referenceImage = pixelBuffer
     }
     
-    private func checkForDifference(in pixelBuffer1: CVPixelBuffer, and pixelBuffer2: CVPixelBuffer) -> Bool { // erkennt, ob das Smartphone stillgehalten wurde (Laufzeiteinsparung)
+    private func sceneStabilityArchieved() -> Bool {
         
-        //ToDo
-        //look here: https://developer.apple.com/videos/play/wwdc2018/717
+        if transpositionHistory.count == maximumhistoryLength {
+            
+            var movingAverage = CGPoint.zero
+            
+            for point in transpositionHistory {
+                
+                movingAverage.x += point.x
+                movingAverage.y += point.y
+            }
+            
+            let distance = sqrt(movingAverage.x * movingAverage.x + movingAverage.y * movingAverage.y)
+            
+            if distance < accuracy {
+                
+                return true
+            }
+        }
         
-        return true
+        return false
     }
     
     private func getMLMultiArray(from pixelBuffer: CVPixelBuffer) -> MLMultiArray! { // wandelt einen PixelBuffer in eine 1 x <width> x <height> x 3 Matrix um
@@ -121,58 +160,35 @@ class MLManager {
         }
     }
     
-    private func getRegionOfSun(in multiArray: MLMultiArray) -> CGRect { // Gibt die Region der Sonne aus einer gegebenen Maske an
+    private func getSunCentre(in multiArray: MLMultiArray) -> CGPoint { // Gibt die Region der Sonne aus einer gegebenen Maske an
         
         //ToDo
-        return CGRect(x: 0, y: 0, width: 0, height: 0)
+        return CGPoint.zero
     }
     
-//    private func resizeMLMultiArray(_ multiArray: MLMultiArray, width: Int, height: Int) -> MLMultiArray! { // wandelt eine gegebene 1 x <width> x <height> x 3 Matrix in eine 1 x 224 x 224 x 3 Matrix um
-//
-//        let size = min(width, height)
-//
-//        do {
-//
-//            let resizedArray = try MLMultiArray(shape: [1, size, size, 3] as [NSNumber], dataType: .float32) // quadratische Matrix
-//
-//            // es werden nur bestimmte Pixel übernommen
-//            // noch nicht fertig / gestestet!!!
-//
-//            var x1 = 0
-//            var y1 = 0
-//
-//            for x in ((width - size) / 2) - 1 ..< size + ((width - size) / 2) {
-//
-//                for y in ((height - size) / 2) - 1 ..< size + ((height - size) / 2) {
-//
-//                    resizedArray[[0, x1, y1, 0] as [NSNumber]] = multiArray[[1, x, y, 0] as [NSNumber]]
-//                    resizedArray[[0, x1, y1, 1] as [NSNumber]] = multiArray[[1, x, y, 1] as [NSNumber]]
-//                    resizedArray[[0, x1, y1, 2] as [NSNumber]] = multiArray[[1, x, y, 2] as [NSNumber]]
-//
-//                    y1 += 1
-//                }
-//
-//                x1 += 1
-//            }
-//
-//            let resizeFactor = (224.0 / Double(size))
-//
-//            let finalArray = try MLMultiArray(shape: [1, 224, 224, 3] as [NSNumber], dataType: .float32) // emdgültige 1 x 224 x 224 x 3 Matrix
-//
-//            //ToDo
-//
-//            return finalArray
-//        }
-//        catch {
-//
-//            logger.error("MLManager: An error occured: \(error.localizedDescription, privacy: .public)")
-//            return nil
-//        }
-//    }
-    
+    private func requestHasFinishedExecuting(request: VNRequest, error: Error?) {
+        
+        if let error = error {
+            
+            logger.error("MLManager: An error occured \(error.localizedDescription, privacy: .public)")
+        }
+        
+        guard let results = request.results else { return }
+        
+        guard let alignmentObservation = results.first as? VNImageTranslationAlignmentObservation else { return }
+        
+        let alignmentTransform = alignmentObservation.alignmentTransform
+        
+        transpositionHistory.append(CGPoint(x: alignmentTransform.tx, y: alignmentTransform.ty))
+        
+        if transpositionHistory.count > maximumhistoryLength {
+            
+            transpositionHistory.removeFirst()
+        }
+    }
 }
 
 protocol MLManagerDelegate {
     
-    func mlManagerDetectedSun(inRegion region: CGRect)
+    func mlManagerDetectedSun(_ centre: CGPoint, withMeasurement measurement: Measurement)
 }

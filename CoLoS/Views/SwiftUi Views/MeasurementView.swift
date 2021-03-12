@@ -10,7 +10,7 @@ import AVFoundation
 
 struct MeasurementView: View {
     
-    let completionHandler: (Double, Double, Double, Double) -> Void // wird ausgeführt, wenn gemessen wurde
+    let completionHandler: (Measurement) -> Void // wird ausgeführt, wenn gemessen wurde
     let alignmentManager = AlignmentManager() // Objekt zum Messen von Azimut und Elevation
     
     let relation = UIScreen.main.bounds.height / UIScreen.main.bounds.width
@@ -53,22 +53,12 @@ struct MeasurementView: View {
                     .font(.headline)
                     .foregroundColor(isSunCentered ? Color.green : Color.red)
                 
-                Button("messen", action: sunIsCentered)
-                    .padding()
-                
                 Spacer()
             }
         }
     }
     
-    func sunIsCentered() { // Wenn der Messen-Button gedrückt wurde, oder wenn das neuronale Netz die Sonne in der Mitte erkannt hat (noch nicht implementiert)...
-        
-        let dateObj = Date() // Datum
-        let date = Double(dateObj.dateInSec) // Datum in Sekunden
-        let timeUTC = Double(dateObj.timeInSec) // UTC in Sekunden
-        
-        let elevation = alignmentManager.elevation
-        let azimut = alignmentManager.azimut
+    func sunIsCentered(withData measurement: Measurement) { // Wenn der Messen-Button gedrückt wurde, oder wenn das neuronale Netz die Sonne in der Mitte erkannt hat (noch nicht implementiert)...
         
         isSunCentered = true
         
@@ -81,13 +71,13 @@ struct MeasurementView: View {
             
             sleep(1)
             
-            completionHandler(azimut, elevation, timeUTC, date) // Messdaten werden übertragen.
+            completionHandler(measurement) // Messdaten werden übertragen.
         }
     }
 }
 
 struct MeasurementView_Previews: PreviewProvider {
     static var previews: some View {
-        MeasurementView(completionHandler: {(a: Double, b: Double, c: Double, d: Double) -> Void in })
+        MeasurementView(completionHandler: {(a: Measurement) -> Void in })
     }
 }

@@ -18,18 +18,18 @@ class CoLoSManager {
     var time: Double?
     var date: Double?
     // bei der erstem Messung werden Azimuzt, Elevation, Zeit (Sekunden nach 00:00Uhr) und Datum (Zeit nach Jahresbeginn in Sekunden) übergeben/gespeichert
-    func addFirstMeasurement(azimut: Double, elevation: Double, time: Double, date: Double) {
+    func addFirstMeasurement(_ measurement: Measurement) {
         
-        azimuts.0 = azimut
-        elevations.0 = elevation
-        self.time = time
-        self.date = date
+        azimuts.0 = measurement.azimut
+        elevations.0 = measurement.elevation
+        self.time = Double(measurement.time)
+        self.date = Double(measurement.date)
     }
     // bei der zweiten Messung werden nur Azimut und Elevation gespeichert, um die Sonnenbewegung festzustellen
-    func addSecondMeasurement(azimut: Double, elevation: Double) {
+    func addSecondMeasurement(_ measurement: Measurement) {
         
-        azimuts.1 = azimut
-        elevations.1 = elevation
+        azimuts.1 = measurement.azimut
+        elevations.1 = measurement.elevation
     }
     // Methode, die getCoordinate aufruft und ohne dem Kompassverfahren arbeitet (ohne Kompassverfahren, d. h. ohne beta)
     //@return die berechnete Position, angegeben in (°) 
