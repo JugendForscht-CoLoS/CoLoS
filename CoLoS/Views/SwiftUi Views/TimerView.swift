@@ -12,8 +12,18 @@ struct TimerView: View {
     
     let completionHandler: () -> Void // wird ausgeführt, wenn die Wartezeit abgelaufen ist
     
+    let timeIntervall = 3600.0
+    let endTime: Double
+    
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State var remainingSec = 3600.0 // Wartezeit (1h)
+    
+    init(completionHandler: @escaping () -> Void) {
+        
+        self.completionHandler = completionHandler
+        
+        endTime = Double(Date().timeInSec) + timeIntervall
+    }
     
     var body: some View {
         
@@ -25,7 +35,7 @@ struct TimerView: View {
                         
                     if self.remainingSec > 0 { // Wenn die Zeit noch läuft...
                             
-                        self.remainingSec -= 1
+                        self.remainingSec = endTime - Double(Date().timeInSec)
                     }
                     else if self.remainingSec == 0 { // Wenn die Zeit abgelaufen ist...
                             
