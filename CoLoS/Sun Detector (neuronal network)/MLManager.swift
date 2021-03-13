@@ -61,8 +61,12 @@ class MLManager: NSObject {
             guard let multiArray = getMLMultiArray(from: resizedPixelBuffer) else { return }
             
             guard let result = predictSun(of: multiArray) else { return }
+            
+            let sunPixels = getSun(in: result)
+            
+            delegate.mlManagerDetectedSun(sunPixels)
 
-            delegate.mlManagerDetectedSun(getSunCentre(in: result), withMeasurement: measurement)
+            delegate.mlManagerDetectedSunCenter(getCenter(of: sunPixels), withMeasurement: measurement)
         }
         
         referenceImage = pixelBuffer
@@ -160,10 +164,40 @@ class MLManager: NSObject {
         }
     }
     
-    private func getSunCentre(in multiArray: MLMultiArray) -> CGPoint { // Gibt die Region der Sonne aus einer gegebenen Maske an
+    private func getSun(in multiArray: MLMultiArray) -> [CGPoint] { // Gibt die Region der Sonne aus einer gegebenen Maske an
         
-        //ToDo
-        return CGPoint.zero
+        var sunPixels: [CGPoint] = []
+                
+        for x in 0 ..< 224 {
+            
+            for y in 0 ..< 224 {
+                
+                let value = multiArray[[0, x, y] as [NSNumber]].floatValue
+                
+                if value >= 0.5 {
+                    
+                    sunPixels.append(CGPoint(x: x, y: y))
+                }
+            }
+        }
+        
+        return sunPixels
+    }
+    
+    private func getCenter(of points: [CGPoint]) -> CGPoint {
+        
+        var center = CGPoint.zero
+        
+        for point in points {
+            
+            center.x += point.x
+            center.y += point.y
+        }
+        
+        center.x = center.x / CGFloat(points.count)
+        center.y = center.y / CGFloat(points.count)
+        
+        return center
     }
     
     private func requestHasFinishedExecuting(request: VNRequest, error: Error?) {
@@ -190,5 +224,7 @@ class MLManager: NSObject {
 
 protocol MLManagerDelegate {
     
-    func mlManagerDetectedSun(_ centre: CGPoint, withMeasurement measurement: Measurement)
+    func mlManagerDetectedSunCenter(_ center: CGPoint, withMeasurement measurement: Measurement)
+    
+    func mlManagerDetectedSun(_ points: [CGPoint])
 }

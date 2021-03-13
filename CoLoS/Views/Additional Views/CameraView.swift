@@ -106,16 +106,21 @@ extension CameraView: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 extension CameraView: MLManagerDelegate {
     
-    func mlManagerDetectedSun(_ centre: CGPoint, withMeasurement measurement: Measurement) { // wird immer dann ausgeführt, wenn das neuronale Netz die Sonne erkannt hat
+    func mlManagerDetectedSunCenter(_ center: CGPoint, withMeasurement measurement: Measurement) { // wird immer dann ausgeführt, wenn das neuronale Netz die Sonne erkannt hat
         
-        let imageCentre = CGPoint(x: 112, y: 112)
+        let imageCenter = CGPoint(x: 112, y: 112)
         
-        let distance = sqrt((imageCentre.x - centre.x) * (imageCentre.x - centre.x) + (imageCentre.y - centre.y) * (imageCentre.y - centre.y))
+        let distance = sqrt((imageCenter.x - center.x) * (imageCenter.x - center.x) + (imageCenter.y - center.y) * (imageCenter.y - center.y))
         
         if distance < mlManager.accuracy {
             
             completionHandler(measurement)
             captureSession.stopRunning()
         }
+    }
+    
+    func mlManagerDetectedSun(_ points: [CGPoint]) {
+        
+        
     }
 }
