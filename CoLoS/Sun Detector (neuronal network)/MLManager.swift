@@ -57,7 +57,7 @@ class MLManager: NSObject {
             
             let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
             let croppedImage = ciImage.cropped(to: CGRect(x: (ciImage.extent.width / 2.0) - (ciImage.extent.height / 2.0), y: 0, width: ciImage.extent.height, height: ciImage.extent.height))
-            let image = croppedImage.oriented(.right)
+            let image = croppedImage.oriented(.rightMirrored)
             
 //            var buffer: CVPixelBuffer?
 //            let attributes = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue, kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
@@ -87,7 +87,7 @@ class MLManager: NSObject {
         referenceImage = pixelBuffer
     }
     
-    private func pixelBufferFromImage(_ ciimage: CIImage) -> CVPixelBuffer {
+    private func pixelBufferFromImage(_ ciimage: CIImage) -> CVPixelBuffer { //Methode wurde nicht von uns geschrieben (Quelle: https://gist.github.com/omarojo/b47ad0f0965ba8bf2e825ef571ef804c)
         
         //let cgimage = convertCIImageToCGImage(inputImage: ciimage!)
         let tmpcontext = CIContext(options: nil)
