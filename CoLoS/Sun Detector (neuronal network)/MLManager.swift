@@ -11,6 +11,8 @@ import CoreVideo
 import CoreML
 import Vision
 import AVFoundation
+import UIKit
+import CoreImage
 
 class MLManager: NSObject {
     
@@ -51,16 +53,29 @@ class MLManager: NSObject {
         
         if sceneStabilityArchieved() { // Wenn das Smartphone still gehalten wird
             
-            guard let resizedPixelBuffer = resizePixelBuffer(pixelBuffer, width: 224, height: 224) else {
+            logger.debug("MLManager: Smartphone is held still by the user.")
+            
+            let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+            let croppedImage = ciImage.cropped(to: CGRect(x: (ciImage.extent.width / 2.0) - (ciImage.extent.height / 2.0), y: 0, width: ciImage.extent.height, height: ciImage.extent.height))
+            let image = croppedImage.oriented(.right)
+            
+//            var buffer: CVPixelBuffer?
+//            let attributes = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue, kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
+//
+//            CVPixelBufferCreate(kCFAllocatorDefault, Int(image.extent.width), Int(image.extent.height), kCVPixelFormatType_32BGRA, attributes, &buffer)
+//            let context = CIContext()
+//            context.render(image, to: buffer!)
+            
+            let buffer = pixelBufferFromImage(image)
+            
+            guard let resizedPixelBuffer = resizePixelBuffer(buffer, width: 224, height: 224) else {
                 
                 logger.error("MLManager: Could not resize pixelBuffer.")
                 
                 return
             }
-        
-            guard let multiArray = getMLMultiArray(from: resizedPixelBuffer) else { return }
             
-            guard let result = predictSun(of: multiArray) else { return }
+            guard let result = predictSun(in: resizedPixelBuffer) else { return }
             
             let sunPixels = getSun(in: result)
             
@@ -70,6 +85,55 @@ class MLManager: NSObject {
         }
         
         referenceImage = pixelBuffer
+    }
+    
+    private func pixelBufferFromImage(_ ciimage: CIImage) -> CVPixelBuffer {
+        
+        //let cgimage = convertCIImageToCGImage(inputImage: ciimage!)
+        let tmpcontext = CIContext(options: nil)
+        let cgimage =  tmpcontext.createCGImage(ciimage, from: ciimage.extent)
+        
+        let cfnumPointer = UnsafeMutablePointer<UnsafeRawPointer>.allocate(capacity: 1)
+        let cfnum = CFNumberCreate(kCFAllocatorDefault, .intType, cfnumPointer)
+        let keys: [CFString] = [kCVPixelBufferCGImageCompatibilityKey, kCVPixelBufferCGBitmapContextCompatibilityKey, kCVPixelBufferBytesPerRowAlignmentKey]
+        let values: [CFTypeRef] = [kCFBooleanTrue, kCFBooleanTrue, cfnum!]
+        let keysPointer = UnsafeMutablePointer<UnsafeRawPointer?>.allocate(capacity: 1)
+        let valuesPointer =  UnsafeMutablePointer<UnsafeRawPointer?>.allocate(capacity: 1)
+        keysPointer.initialize(to: keys)
+        valuesPointer.initialize(to: values)
+        
+        let options = CFDictionaryCreate(kCFAllocatorDefault, keysPointer, valuesPointer, keys.count, nil, nil)
+       
+        let width = cgimage!.width
+        let height = cgimage!.height
+     
+        var pxbuffer: CVPixelBuffer?
+        // if pxbuffer = nil, you will get status = -6661
+        var status = CVPixelBufferCreate(kCFAllocatorDefault, width, height,
+                                         kCVPixelFormatType_32BGRA, options, &pxbuffer)
+        status = CVPixelBufferLockBaseAddress(pxbuffer!, CVPixelBufferLockFlags(rawValue: 0));
+        
+        let bufferAddress = CVPixelBufferGetBaseAddress(pxbuffer!);
+
+        
+        let rgbColorSpace = CGColorSpaceCreateDeviceRGB();
+        let bytesperrow = CVPixelBufferGetBytesPerRow(pxbuffer!)
+        let context = CGContext(data: bufferAddress,
+                                width: width,
+                                height: height,
+                                bitsPerComponent: 8,
+                                bytesPerRow: bytesperrow,
+                                space: rgbColorSpace,
+                                bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue);
+        context?.concatenate(CGAffineTransform(rotationAngle: 0))
+        context?.concatenate(__CGAffineTransformMake( 1, 0, 0, -1, 0, CGFloat(height) )) //Flip Vertical
+//        context?.concatenate(__CGAffineTransformMake( -1.0, 0.0, 0.0, 1.0, CGFloat(width), 0.0)) //Flip Horizontal
+        
+
+        context?.draw(cgimage!, in: CGRect(x:0, y:0, width:CGFloat(width), height:CGFloat(height)));
+        status = CVPixelBufferUnlockBaseAddress(pxbuffer!, CVPixelBufferLockFlags(rawValue: 0));
+        return pxbuffer!;
+        
     }
     
     private func sceneStabilityArchieved() -> Bool {
@@ -95,62 +159,13 @@ class MLManager: NSObject {
         return false
     }
     
-    private func getMLMultiArray(from pixelBuffer: CVPixelBuffer) -> MLMultiArray! { // wandelt einen PixelBuffer in eine 1 x <width> x <height> x 3 Matrix um
-        
-        do {
-            
-            // Maße des PixelBuffers werden ermittelt
-            
-            let width = CVPixelBufferGetWidth(pixelBuffer)
-            let height = CVPixelBufferGetWidth(pixelBuffer)
-            
-            // Matrix wird initialisiert
-            
-            let array = try MLMultiArray(shape: [1, width, height, 3] as [NSNumber], dataType: .float32)
-            
-            // auslesen der Bytes und übertragen in die Matrix / vgl. https://stackoverflow.com/questions/34569750/get-pixel-value-from-cvpixelbufferref-in-swift
-            // noch nicht fertig / getestet!!!
-            
-            CVPixelBufferLockBaseAddress(pixelBuffer, .readOnly)
-            
-            let baseAdress = CVPixelBufferGetBaseAddress(pixelBuffer)
-            guard let buffer = baseAdress?.assumingMemoryBound(to: UInt8.self) else {
-                
-                logger.error("MLManager: Could not unwrap the baseAdress of the pixelBuffer.")
-                return nil
-            }
-            
-            let bytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer)
-            
-            
-            for x in 0 ..< width {
-                
-                for y in 0 ..< height {
-                    
-                    let index = x * 4 + y * bytesPerRow
-                    
-                    array[[0, x, y, 0] as [NSNumber]] = NSNumber(value: buffer[index + 2])
-                    array[[0, x, y, 1] as [NSNumber]] = NSNumber(value: buffer[index + 1])
-                    array[[0, x, y, 2] as [NSNumber]] = NSNumber(value: buffer[index])
-                }
-            }
-            
-            return array
-        }
-        catch {
-            
-            logger.error("MLManager: An error occured: \(error.localizedDescription, privacy: .public)")
-            return nil
-        }
-    }
-    
-    private func predictSun(of multiArray: MLMultiArray) -> MLMultiArray! { // Sonne wird erkannt
+    private func predictSun(in image: CVPixelBuffer) -> MLMultiArray! { // Sonne wird erkannt
         
         do {
             
             let neuralNetwork = SunDetector() // Instanz des neuronalen Netzes
             
-            let input = SunDetectorInput(input_1: multiArray)
+            let input = SunDetectorInput(input_1: image)
             
             let output = try neuralNetwork.prediction(input: input)
             
@@ -220,6 +235,55 @@ class MLManager: NSObject {
             transpositionHistory.removeFirst()
         }
     }
+    
+//    private func getMLMultiArray(from pixelBuffer: CVPixelBuffer) -> MLMultiArray! { // wandelt einen PixelBuffer in eine 1 x <width> x <height> x 3 Matrix um
+//
+//        do {
+//
+//            // Maße des PixelBuffers werden ermittelt
+//
+//            let width = CVPixelBufferGetWidth(pixelBuffer)
+//            let height = CVPixelBufferGetWidth(pixelBuffer)
+//
+//            // Matrix wird initialisiert
+//
+//            let array = try MLMultiArray(shape: [1, width, height, 3] as [NSNumber], dataType: .float32)
+//
+//            // auslesen der Bytes und übertragen in die Matrix / vgl. https://stackoverflow.com/questions/34569750/get-pixel-value-from-cvpixelbufferref-in-swift
+//            // noch nicht fertig / getestet!!!
+//
+//            CVPixelBufferLockBaseAddress(pixelBuffer, .readOnly)
+//
+//            let baseAdress = CVPixelBufferGetBaseAddress(pixelBuffer)
+//            guard let buffer = baseAdress?.assumingMemoryBound(to: UInt8.self) else {
+//
+//                logger.error("MLManager: Could not unwrap the baseAdress of the pixelBuffer.")
+//                return nil
+//            }
+//
+//            let bytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer)
+//
+//
+//            for x in 0 ..< width {
+//
+//                for y in 0 ..< height {
+//
+//                    let index = x * 4 + y * bytesPerRow
+//
+//                    array[[0, x, y, 0] as [NSNumber]] = NSNumber(value: buffer[index + 2])
+//                    array[[0, x, y, 1] as [NSNumber]] = NSNumber(value: buffer[index + 1])
+//                    array[[0, x, y, 2] as [NSNumber]] = NSNumber(value: buffer[index])
+//                }
+//            }
+//
+//            return array
+//        }
+//        catch {
+//
+//            logger.error("MLManager: An error occured: \(error.localizedDescription, privacy: .public)")
+//            return nil
+//        }
+//    }
 }
 
 protocol MLManagerDelegate {

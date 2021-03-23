@@ -108,6 +108,8 @@ extension CameraView: MLManagerDelegate {
     
     func mlManagerDetectedSunCenter(_ center: CGPoint, withMeasurement measurement: Measurement) { // wird immer dann ausgeführt, wenn das neuronale Netz die Sonne erkannt hat
         
+        logger.debug("CameraView: Detected center of sun: (\(center.x) | \(center.y))")
+        
         let imageCenter = CGPoint(x: 112, y: 112)
         
         let distance = sqrt((imageCenter.x - center.x) * (imageCenter.x - center.x) + (imageCenter.y - center.y) * (imageCenter.y - center.y))
@@ -121,6 +123,6 @@ extension CameraView: MLManagerDelegate {
     
     func mlManagerDetectedSun(_ points: [CGPoint]) {
         
-        
+        logger.debug("CameraView: Detected \(points.count) sun pixels!")
     }
 }
