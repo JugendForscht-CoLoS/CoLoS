@@ -8,12 +8,14 @@
 import Foundation
 import CoreMotion
 
-class AlignmentManager {
+class AlignmentManager: ObservableObject {
     
     let manager: CMMotionManager // Objekt, welches die Sensoren auslesen kann
     
     var elevation = 0.0
     var azimut = 0.0
+    
+    @Published var isPositionRight = false
     
     init() {
         

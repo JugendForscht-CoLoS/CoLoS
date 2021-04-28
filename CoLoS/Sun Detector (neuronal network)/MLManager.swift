@@ -68,7 +68,7 @@ class MLManager: NSObject {
             
             let buffer = pixelBufferFromImage(image)
             
-            guard let resizedPixelBuffer = resizePixelBuffer(buffer, width: 224, height: 224) else {
+            guard let resizedPixelBuffer = resizePixelBuffer(buffer, width: Int(image.extent.width * 0.04), height: Int(image.extent.width * 0.04)) else {
                 
                 logger.error("MLManager: Could not resize pixelBuffer.")
                 
@@ -182,6 +182,8 @@ class MLManager: NSObject {
     private func getSun(in multiArray: MLMultiArray) -> [CGPoint] { // Gibt die Region der Sonne aus einer gegebenen Maske an
         
         var sunPixels: [CGPoint] = []
+        
+        var string = ""
                 
         for x in 0 ..< 224 {
             
@@ -193,8 +195,14 @@ class MLManager: NSObject {
                     
                     sunPixels.append(CGPoint(x: x, y: y))
                 }
+                
+                string += "[\(value)] "
             }
+            
+            string += "\n"
         }
+        
+        print(string)
         
         return sunPixels
     }

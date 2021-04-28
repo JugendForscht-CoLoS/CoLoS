@@ -11,7 +11,7 @@ import AVFoundation
 struct MeasurementView: View {
     
     let completionHandler: (Measurement) -> Void // wird ausgeführt, wenn gemessen wurde
-    let alignmentManager = AlignmentManager() // Objekt zum Messen von Azimut und Elevation
+    @ObservedObject var alignmentManager = AlignmentManager() // Objekt zum Messen von Azimut und Elevation
     
     let relation = UIScreen.main.bounds.height / UIScreen.main.bounds.width
     
